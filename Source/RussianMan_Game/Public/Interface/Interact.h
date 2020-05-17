@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "Interact.generated.h"
 
+class ARussianCharacter;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UInteract : public UInterface
@@ -22,6 +24,6 @@ class RUSSIANMAN_GAME_API IInteract
 	
 public:
 
-	virtual bool Interact() = 0;
+	virtual bool Interact(ARussianCharacter* Caller) = 0;
 	virtual void DrawToCustomDepth(bool bDraw);
 };
