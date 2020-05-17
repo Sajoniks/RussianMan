@@ -20,9 +20,14 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
 	UCameraComponent* FirstPersonCamera;
 
+	void Interact();
+
 public:
 	// Sets default values for this character's properties
 	ARussianCharacter(const FObjectInitializer& ObjectInitializer);
+
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 
 protected:
 	// Called when the game starts or when spawned
