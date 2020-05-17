@@ -6,14 +6,23 @@
 #include "GameFramework/Character.h"
 #include "RussianCharacter.generated.h"
 
-UCLASS()
+class UInteractionComponent;
+class UCameraComponent;
+
+UCLASS(Blueprintable, CustomConstructor)
 class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleDefaultsOnly, Category="Interaction|Component", Instanced)
+	UInteractionComponent* InteractionComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
+	UCameraComponent* FirstPersonCamera;
+
 public:
 	// Sets default values for this character's properties
-	ARussianCharacter();
+	ARussianCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
