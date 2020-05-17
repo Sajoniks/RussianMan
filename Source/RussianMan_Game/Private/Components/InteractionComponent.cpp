@@ -1,16 +1,68 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractionComponent.h"
+#include "Components/InteractionComponent.h"
+#include "TimerManager.h"
+
+TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		
+	}
+}
+
+bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
+{
+}
 
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
+	UWorld* World = GetWorld();
+	
+	if (SearchRate > 0.25 && World && !World->GetTimerManager().IsTimerActive(SearchTimerHandle))
+		World->GetTimerManager().SetTimer(SearchTimerHandle, this, &UInteractionComponent::PerformScan, SearchRate, true);
+}
 
-	// ...
+void UInteractionComponent::SetTraceSource(USceneComponent* Source)
+{
+	TraceSource = Source;
+}
+
+void UInteractionComponent::PerformScan()
+{	
+	const FVector Center = GetOwner()->GetActorLocation();
+	const FVector ForwardVector = TraceSource->GetComponentRotation().Vector();
+	
+	const auto ObjectHits = MakeSphereTrace();
+	
+	float MinDistance = SearchRadius;
+	float MaxThreshold = -1.f;
+
+	IInteract* Interactable = nullptr;
+	
+	for (const auto& Hit : ObjectHits)
+	{
+		if (!MakeObstacleTrace(Hit))
+		{
+			const FVector Direction = Hit.Location - Center;
+			const float Distance = FVector::Dist(Center, Hit.Location);
+			const float Dot = FVector::DotProduct(ForwardVector, Direction.GetSafeNormal());
+
+			if (Distance < MinDistance && MaxThreshold < Dot)
+			{
+				MinDistance = Distance;
+				MaxThreshold = Dot;
+				Interactable = Cast<IInteract>(Hit.Actor);
+			}
+		}
+	}
+
+	CurrentInteractable = Interactable;
 }
 
 
