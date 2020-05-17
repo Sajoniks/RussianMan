@@ -10,12 +10,31 @@ TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
 
 	if (World)
 	{
+		TArray<FHitResult> Hits;
+		FVector Location = TraceSource->GetComponentLocation();
+		FCollisionObjectQueryParams Params{ ECC_GameTraceChannel1 };
 		
+		World->LineTraceMultiByObjectType(Hits, Location, Location, Params);
+
+		return Hits; 
 	}
+
+	return TArray<FHitResult>();
 }
 
 bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 {
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FVector Location = TraceSource->GetComponentLocation();
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActors({ GetOwner(), HitResult.Actor });
+		
+		return World->LineTraceTestByChannel(Location, HitResult.Location, ECC_Visibility, Params);
+	}
+
+	return false;
 }
 
 // Sets default values for this component's properties
