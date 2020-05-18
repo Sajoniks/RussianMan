@@ -8,7 +8,7 @@
 
 class IInteract;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), BlueprintType )
 class RUSSIANMAN_GAME_API UInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -27,11 +27,11 @@ class RUSSIANMAN_GAME_API UInteractionComponent : public UActorComponent
 	//Min distance between aim point and interactable object center
 	float Threshold;
 
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly, Category="Gameplay")
 	USceneComponent* TraceSource;
 
 	UPROPERTY()
-	IInteract* CurrentInteractable;
+	TScriptInterface<IInteract> CurrentInteractable;
 
 	/*Helpers*/
 
@@ -45,7 +45,9 @@ public:
 	// Sets default values for this component's properties
 	UInteractionComponent();
 
+	UFUNCTION(BlueprintCallable, Category="Interaction|Set")
 	void SetTraceSource(USceneComponent* Source);
+	
 	void PerformScan();
 
 protected:

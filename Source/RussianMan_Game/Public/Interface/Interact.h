@@ -9,7 +9,7 @@
 class ARussianCharacter;
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UInteract : public UInterface
 {
 	GENERATED_BODY()
@@ -24,6 +24,9 @@ class RUSSIANMAN_GAME_API IInteract
 	
 public:
 
-	virtual bool Interact(ARussianCharacter* Caller) = 0;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction|Interface")
+	bool Interact(ARussianCharacter* Caller);
+
+	virtual bool Interact_Implementation(ARussianCharacter* Caller) = 0;
 	virtual void DrawToCustomDepth(bool bDraw);
 };

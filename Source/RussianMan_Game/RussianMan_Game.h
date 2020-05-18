@@ -4,3 +4,4 @@
 
 #include "CoreMinimal.h"
 
+#define ECC_PICKUP ECC_GameTraceChannel1

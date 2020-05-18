@@ -2,6 +2,7 @@
 
 
 #include "Components/InteractionComponent.h"
+#include "Interface/Interact.h"
 #include "TimerManager.h"
 
 TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
@@ -29,7 +30,8 @@ bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 	{
 		FVector Location = TraceSource->GetComponentLocation();
 		FCollisionQueryParams Params;
-		Params.AddIgnoredActors({ GetOwner(), HitResult.Actor });
+		Params.AddIgnoredActor(GetOwner());
+		Params.AddIgnoredActor(HitResult.GetActor());
 		
 		return World->LineTraceTestByChannel(Location, HitResult.Location, ECC_Visibility, Params);
 	}
@@ -45,7 +47,7 @@ UInteractionComponent::UInteractionComponent()
 	
 	if (SearchRate > 0.25 && World && !World->GetTimerManager().IsTimerActive(SearchTimerHandle))
 		World->GetTimerManager().SetTimer(SearchTimerHandle, this, &UInteractionComponent::PerformScan, SearchRate, true);
-}
+};
 
 void UInteractionComponent::SetTraceSource(USceneComponent* Source)
 {
@@ -62,7 +64,7 @@ void UInteractionComponent::PerformScan()
 	float MinDistance = SearchRadius;
 	float MaxThreshold = -1.f;
 
-	IInteract* Interactable = nullptr;
+	UObject* Interactable = nullptr;
 	
 	for (const auto& Hit : ObjectHits)
 	{
@@ -72,11 +74,11 @@ void UInteractionComponent::PerformScan()
 			const float Distance = FVector::Dist(Center, Hit.Location);
 			const float Dot = FVector::DotProduct(ForwardVector, Direction.GetSafeNormal());
 
-			if (Distance < MinDistance && MaxThreshold < Dot)
+			if (Distance <= MinDistance && MaxThreshold <= Dot)
 			{
 				MinDistance = Distance;
 				MaxThreshold = Dot;
-				Interactable = Cast<IInteract>(Hit.Actor);
+				Interactable = Hit.GetActor();
 			}
 		}
 	}
