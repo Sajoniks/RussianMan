@@ -26,12 +26,14 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 
 void ARussianCharacter::MoveForward(float Value)
 {
-	AddMovementInput(GetActorForwardVector(), Value);
+	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	AddMovementInput(Direction, Value);
 }
 
 void ARussianCharacter::MoveRight(float Value)
 {
-	AddMovementInput(GetActorRightVector(), Value);
+	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	AddMovementInput(Direction, Value);
 }
 
 // Called when the game starts or when spawned

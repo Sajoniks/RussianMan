@@ -4,4 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#define ECC_PICKUP ECC_GameTraceChannel1
+#define ECC_INTERACT ECC_GameTraceChannel1
+
+DECLARE_LOG_CATEGORY_EXTERN(LogInteract, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(LogInventory, Log, All)

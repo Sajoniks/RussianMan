@@ -4,6 +4,7 @@
 #include "Components/InteractionComponent.h"
 #include "Interface/Interact.h"
 #include "TimerManager.h"
+#include "RussianMan_Game/RussianMan_Game.h"
 
 TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
 {
@@ -12,11 +13,14 @@ TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
 	if (World)
 	{
 		TArray<FHitResult> Hits;
-		FVector Location = TraceSource->GetComponentLocation();
-		FCollisionObjectQueryParams Params{ ECC_GameTraceChannel1 };
-		
-		World->LineTraceMultiByObjectType(Hits, Location, Location, Params);
+		const FVector Location = TraceSource->GetComponentLocation();
+		const FCollisionObjectQueryParams Params{ ECC_INTERACT };
+		const auto Shape = FCollisionShape::MakeSphere(SearchRadius);
 
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(GetOwner());
+		
+		World->SweepMultiByObjectType(Hits, Location, Location, FQuat::Identity, Params, Shape, QueryParams);
 		return Hits; 
 	}
 
@@ -43,10 +47,7 @@ bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 UInteractionComponent::UInteractionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	UWorld* World = GetWorld();
-	
-	if (SearchRate > 0.25 && World && !World->GetTimerManager().IsTimerActive(SearchTimerHandle))
-		World->GetTimerManager().SetTimer(SearchTimerHandle, this, &UInteractionComponent::PerformScan, SearchRate, true);
+
 };
 
 void UInteractionComponent::SetTraceSource(USceneComponent* Source)
@@ -92,8 +93,15 @@ void UInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	UWorld* World = GetWorld();
+
+	if (SearchRate > 0.25 && SearchRadius > 50.f && World && !World->GetTimerManager().IsTimerActive(SearchTimerHandle))
+	{
+		World->GetTimerManager().SetTimer(SearchTimerHandle, this, &UInteractionComponent::PerformScan, SearchRate, true);
+		UE_LOG(LogInteract, Log, TEXT("Starting search timer in %s with delay %f s"), *GetName(), SearchRate);
+	}
+	else
+		UE_LOG(LogInteract, Error, TEXT("Failed to start search timer in %s, parameters are:\nDelay: %f;\nRadius: %f"), *GetName(), SearchRate, SearchRadius);
 }
 
 
