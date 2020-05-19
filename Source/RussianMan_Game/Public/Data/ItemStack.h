@@ -26,9 +26,14 @@ private:
 
 public:
 
+	//Get parameter of Type type
 	template <class Type>
 	const Type& GetParameter(const FGameplayTag& ParamTag) const;
 
+	/** Set parameter of type Type
+	 * @param ParamTag		Tag of parameter
+	 * @param Value			Value of parameter ParamTag
+	 */
 	template <class Type>
 	void SetParameter(const FGameplayTag& ParamTag, const Type& Value);
 };
