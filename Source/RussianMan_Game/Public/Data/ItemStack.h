@@ -6,7 +6,7 @@
 #include "GameplayTags.h"
 #include "ItemStack.generated.h"
 
-/**
+/** Represents item in inventory
  * 
  */
 USTRUCT()
