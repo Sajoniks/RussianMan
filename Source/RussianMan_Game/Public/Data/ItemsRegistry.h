@@ -4,7 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "GameplayTags.h"
 #include "ItemsRegistry.generated.h"
+
+USTRUCT()
+struct FItem
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, Category="Data")
+	TSoftObjectPtr<class UStaticMesh> WorldMesh;
+};
 
 /**
  * 
@@ -13,5 +23,11 @@ UCLASS()
 class RUSSIANMAN_GAME_API UItemsRegistry : public UDataAsset
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	TMap<FGameplayTag, FItem> Items;
 	
+public:
+
+	UStaticMesh* GetWorldMesh(const FGameplayTag& ID) const;
 };

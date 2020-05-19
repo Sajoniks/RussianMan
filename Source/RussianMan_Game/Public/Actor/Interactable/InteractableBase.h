@@ -23,7 +23,7 @@ public:
 	/*Interact Interface*/
 	
 	void DrawToCustomDepth(bool bDraw) override;
-	bool Interact_Implementation(ARussianCharacter* Caller) override;
+	virtual bool Interact_Implementation(ARussianCharacter* Caller) override;
 
 protected:
 	// Called when the game starts or when spawned

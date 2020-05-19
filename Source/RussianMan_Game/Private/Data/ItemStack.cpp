@@ -6,23 +6,25 @@
 template <>
 const float& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
 {
-
+	check(ScalarParameters.Contains(ParamTag));
+	return ScalarParameters[ParamTag];
 }
 
 template <>
-const FGameplayTag& GetParameter(const FGameplayTag& ParamTag) const
+const FGameplayTag& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
+{
+	check(TagParameters.Contains(ParamTag))
+	return TagParameters[ParamTag];
+}
+
+template <>
+void FItemStack::SetParameter(const FGameplayTag& ParamTag, const float& Value)
 {
 	
 }
 
 template <>
-void SetParameter(const FGameplayTag& ParamTag, const float& Value)
-{
-	
-}
-
-template <>
-void SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& Value)
+void FItemStack::SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& Value)
 {
 	
 }

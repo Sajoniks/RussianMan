@@ -9,15 +9,15 @@
 /** Represents item in inventory
  * 
  */
-USTRUCT()
-struct FItemStack
+USTRUCT(BlueprintType)
+struct RUSSIANMAN_GAME_API FItemStack
 {
 	friend class UItemsRegistry;
 	
 	GENERATED_BODY()
 
 	FGameplayTag ID;
-	uint32 Count;
+	uint32 Num;
 	
 private:
 	
@@ -37,3 +37,16 @@ public:
 	template <class Type>
 	void SetParameter(const FGameplayTag& ParamTag, const Type& Value);
 };
+
+template <class Type>
+const Type& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
+{
+	check("No implementation for given template type!");
+	return static_cast<Type>(0.f);
+}
+
+template <class Type>
+void FItemStack::SetParameter(const FGameplayTag& ParamTag, const Type& Value)
+{
+	check("No implementation for given template type!");
+}
