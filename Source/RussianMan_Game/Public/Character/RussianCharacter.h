@@ -7,6 +7,7 @@
 #include "RussianCharacter.generated.h"
 
 class UInteractionComponent;
+class UPlayerInventoryComponent;
 class UCameraComponent;
 
 UCLASS(Blueprintable, CustomConstructor)
@@ -16,6 +17,9 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Interaction|Components", Instanced)
 	UInteractionComponent* InteractionComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category="Inventory|Components", Instanced)
+	UPlayerInventoryComponent* InventoryComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
 	UCameraComponent* FirstPersonCamera;
@@ -31,6 +35,8 @@ public:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+
+	UPlayerInventoryComponent* GetInventory() const;
 
 protected:
 	// Called when the game starts or when spawned

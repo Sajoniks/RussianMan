@@ -26,6 +26,8 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 	PrimaryActorTick.bCanEverTick = false;
 	InteractionComponent = ObjectInitializer.CreateDefaultSubobject<UInteractionComponent>(this, TEXT("Interaction Component"));
 
+	InventoryComponent = ObjectInitializer.CreateDefaultSubobject<UPlayerInventoryComponent>(this, TEXT("Inventory Component"));
+	
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("First Person Camera");
 	FirstPersonCamera->bUsePawnControlRotation = true;
 	FirstPersonCamera->SetupAttachment(GetRootComponent());
@@ -41,6 +43,11 @@ void ARussianCharacter::MoveRight(float Value)
 {
 	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	AddMovementInput(Direction, Value);
+}
+
+UPlayerInventoryComponent* ARussianCharacter::GetInventory() const
+{
+	return InventoryComponent;
 }
 
 // Called when the game starts or when spawned
