@@ -9,7 +9,7 @@ void ARussianCharacter::Interact()
 {
 	if (InteractionComponent)
 	{
-		
+		bool bResult = InteractionComponent->Interact();
 	}
 }
 

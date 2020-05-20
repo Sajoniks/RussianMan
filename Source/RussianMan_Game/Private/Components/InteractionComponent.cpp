@@ -30,7 +30,7 @@ TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
 		TArray<FHitResult> Hits;
 		
 		//TODO 
-		const FVector Location = TraceSource ? TraceSource->GetComponentLocation() : GetOwner()->GetActorLocation() + 50;
+		const FVector Location = TraceSource ? TraceSource->GetComponentLocation() : GetOwner()->GetActorLocation() + FVector{ 0,0,50 };
 		const FCollisionObjectQueryParams Params{ ECC_INTERACT };
 		const auto Shape = FCollisionShape::MakeSphere(SearchRadius);
 
@@ -55,7 +55,7 @@ bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 	if (World)
 	{
 		//TODO 
-		const FVector Location = TraceSource ? TraceSource->GetComponentLocation() : GetOwner()->GetActorLocation() + 50;
+		const FVector Location = TraceSource ? TraceSource->GetComponentLocation() : GetOwner()->GetActorLocation() + FVector{ 0,0,50 };
 		const FVector EndLocation = BoundingBoxData(HitResult.GetActor()).first;
 		
 		FCollisionQueryParams Params;
