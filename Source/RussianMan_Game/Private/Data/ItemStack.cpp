@@ -22,13 +22,15 @@ const FGameplayTag& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
 template <>
 void FItemStack::SetParameter(const FGameplayTag& ParamTag, const float& Value)
 {
-	
+	if (ScalarParameters.Contains(ParamTag))
+		ScalarParameters[ParamTag] = Value;
 }
 
 template <>
 void FItemStack::SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& Value)
 {
-	
+	if (TagParameters.Contains(ParamTag))
+		TagParameters[ParamTag] = Value;
 }
 
 bool FItemStack::IsValid() const
