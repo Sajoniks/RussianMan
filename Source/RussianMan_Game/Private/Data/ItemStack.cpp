@@ -35,7 +35,7 @@ void FItemStack::SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& 
 
 bool FItemStack::IsValid() const
 {
-	return ID.IsValid() && Num > 0;
+	return ID.IsValid() && Num > 0 && ItemWeight >= 0;
 }
 
 bool FItemStack::operator==(const FItemStack& ItemStack) const
@@ -49,8 +49,13 @@ bool FItemStack::operator==(const FGameplayTag& ItemID) const
 }
 
 FItemStack::FItemStack(const FGameplayTag& ID, uint32 Num)
-	:ID(ID), Num(Num)
+	:ID(ID), Num(Num), ItemWeight(-1)
 {}
 
 FItemStack::FItemStack()
-	:ID(FGameplayTag::EmptyTag), Num(0) {}
+	:ID(FGameplayTag::EmptyTag), Num(0), ItemWeight(-1) {}
+
+float FItemStack::Weight() const
+{
+	return ItemWeight * Num;
+}

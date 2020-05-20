@@ -50,6 +50,9 @@ private:
 	 */
 	TMap<FGameplayTag, FGameplayTag> TagParameters;
 
+	//Cached weight item weight
+	float ItemWeight;
+
 public:
 
 	//Get parameter of Type type
@@ -62,6 +65,8 @@ public:
 	 */
 	template <class Type>
 	void SetParameter(const FGameplayTag& ParamTag, const Type& Value);
+
+	float Weight() const;
 };
 
 template <class Type>
