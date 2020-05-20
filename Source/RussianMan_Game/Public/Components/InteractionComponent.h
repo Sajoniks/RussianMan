@@ -41,10 +41,13 @@ class RUSSIANMAN_GAME_API UInteractionComponent : public UActorComponent
 	//Makes single line trace by visibility channel to check obstacles
 	bool MakeObstacleTrace(const FHitResult& HitResult) const;
 	
-public:	
+public:
+
+	bool bShowDebugInfo = false;
+	
 	// Sets default values for this component's properties
 	UInteractionComponent();
-
+	
 	UFUNCTION(BlueprintCallable, Category="Interaction|Set")
 	void SetTraceSource(USceneComponent* Source);
 	

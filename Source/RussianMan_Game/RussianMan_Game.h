@@ -8,3 +8,4 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogInteract, Log, All)
 DECLARE_LOG_CATEGORY_EXTERN(LogInventory, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(LogItemsRegistry, Log, All)

@@ -7,3 +7,4 @@ IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, RussianMan_Game, "Russian
 
 DEFINE_LOG_CATEGORY(LogInteract)
 DEFINE_LOG_CATEGORY(LogInventory)
+DEFINE_LOG_CATEGORY(LogItemsRegistry)

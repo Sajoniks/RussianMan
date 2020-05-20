@@ -17,11 +17,37 @@ struct RUSSIANMAN_GAME_API FItemStack
 	GENERATED_BODY()
 
 	FGameplayTag ID;
-	uint32 Num;
+	int32 Num;
+
+	//Check if stack is valid (ID is not null and Num is not zero)
+	bool IsValid() const;
+
+	/**Check stacks equality
+	 *@param ItemStack Other stack to compare
+	 */
+	bool operator==(const FItemStack& ItemStack) const;
+
+	/**Check stacks equality
+	 *@param ItemID ID of item to compare
+	 */
+	bool operator==(const FGameplayTag& ItemID) const;
+
+	//Empty stack
+	static FItemStack EmptyStack;
+
+	FItemStack(const FGameplayTag& ID, uint32 Num);
+	FItemStack();
 	
 private:
-	
+
+	/**Map of scalar parameters
+	 * @note Such as item weight, etc.
+	 */
 	TMap<FGameplayTag, float> ScalarParameters;
+
+	/**Map of tagged parameters
+	 *@note Such as ammo type, etc.
+	 */
 	TMap<FGameplayTag, FGameplayTag> TagParameters;
 
 public:

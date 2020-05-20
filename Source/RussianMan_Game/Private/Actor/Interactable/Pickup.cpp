@@ -2,7 +2,10 @@
 
 
 #include "Actor/Interactable/Pickup.h"
+
+#include "RussianGameInstance.h"
 #include "Data/ItemsRegistry.h"
+#include "RussianMan_Game/RussianMan_Game.h"
 
 #if WITH_EDITOR
 #include "UObject/ConstructorHelpers.h"
@@ -10,33 +13,51 @@
 
 APickup::APickup()
 {
+	ItemCount = 1;
+	
 #if WITH_EDITOR
-	//const auto RegistryObject = ConstructorHelpers::FObjectFinder<UItemsRegistry>(TEXT(""));
-	//ItemsRegistry = RegistryObject.Object;
+	const auto RegistryObject = ConstructorHelpers::FObjectFinder<UItemsRegistry>(TEXT("ItemsRegistry'/Game/Blueprint/Data/BP_ItemsRegistry.BP_ItemsRegistry'"));
+	ItemsRegistry = RegistryObject.Object;
 #endif
+
+	WorldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("World Mesh"));
+	SetRootComponent(WorldMesh);
 }
 
 void APickup::MakePickupFromStack(FItemStack& Stack)
 {
-	
+	Move(Item, Stack);
+	Stack = FItemStack::EmptyStack;
 }
 
 #if WITH_EDITOR
-void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+void APickup::OnConstruction(const FTransform& Transform)
 {
 	if (ItemsRegistry)
 	{
-		WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(Item.ID));
+		WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(ID));
+		UE_LOG(LogItemsRegistry, Log, TEXT("Updating %s because one of fields has changed"), *GetName());
 	}
 }
 #endif
 
 void APickup::BeginPlay()
 {
+	Super::BeginPlay();
+	
 	if (!ItemsRegistry)
 	{
-		//TODO 
+		const auto Instance = Cast<URussianGameInstance>(GetGameInstance());
+		
+		if (Instance)
+			ItemsRegistry = Instance->GetItemsRegistry();
 	}
+
+	if (!WorldMesh->GetStaticMesh())
+		WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(ID));
+
+	Item = ItemsRegistry->MakeStackFromID(ID);
+	Item.Num = ItemCount;
 }
 
 bool APickup::Interact_Implementation(ARussianCharacter* Caller)

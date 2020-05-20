@@ -3,6 +3,8 @@
 
 #include "Data/ItemStack.h"
 
+FItemStack FItemStack::EmptyStack;
+
 template <>
 const float& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
 {
@@ -28,3 +30,25 @@ void FItemStack::SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& 
 {
 	
 }
+
+bool FItemStack::IsValid() const
+{
+	return ID.IsValid() && Num > 0;
+}
+
+bool FItemStack::operator==(const FItemStack& ItemStack) const
+{
+	return ItemStack.ID.MatchesTagExact(ID) && Num == ItemStack.Num;
+}
+
+bool FItemStack::operator==(const FGameplayTag& ItemID) const
+{
+	return ItemID.MatchesTagExact(ID);
+}
+
+FItemStack::FItemStack(const FGameplayTag& ID, uint32 Num)
+	:ID(ID), Num(Num)
+{}
+
+FItemStack::FItemStack()
+	:ID(FGameplayTag::EmptyTag), Num(0) {}

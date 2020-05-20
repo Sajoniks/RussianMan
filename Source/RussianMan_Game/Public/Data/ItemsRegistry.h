@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GameplayTags.h"
+#include "ItemStack.h"
+
 #include "ItemsRegistry.generated.h"
 
 USTRUCT()
@@ -19,7 +21,7 @@ struct FItem
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class RUSSIANMAN_GAME_API UItemsRegistry : public UDataAsset
 {
 	GENERATED_BODY()
@@ -30,4 +32,5 @@ class RUSSIANMAN_GAME_API UItemsRegistry : public UDataAsset
 public:
 
 	UStaticMesh* GetWorldMesh(const FGameplayTag& ID) const;
+	FItemStack MakeStackFromID(const FGameplayTag& ID) const;
 };

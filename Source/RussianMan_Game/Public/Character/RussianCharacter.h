@@ -14,13 +14,16 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Interaction|Component", Instanced)
+	UPROPERTY(VisibleDefaultsOnly, Category="Interaction|Components", Instanced)
 	UInteractionComponent* InteractionComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
 	UCameraComponent* FirstPersonCamera;
 
 	void Interact();
+
+	UFUNCTION(Exec)
+	void ShowInteractDebugInformation(bool bDebug);
 
 public:
 	// Sets default values for this character's properties

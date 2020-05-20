@@ -41,7 +41,8 @@ void AInteractableBase::BeginPlay()
 			{
 				ObjectTree.Add(Mesh);
 				Mesh->SetCollisionObjectType(ECC_INTERACT);
-				Mesh->SetCollisionProfileName("Pickup");
+
+				UE_LOG(LogTemp, All, TEXT("Setting collision object type to %d for mesh %s"), ECC_INTERACT, *Mesh->GetName());
 			}
 		}
 	}

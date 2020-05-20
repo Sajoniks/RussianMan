@@ -19,12 +19,18 @@ class RUSSIANMAN_GAME_API APickup : public AInteractableBase
 	class UItemsRegistry* ItemsRegistry;
 #endif
 
+	UPROPERTY()
 	class UStaticMeshComponent* WorldMesh;
 
-	UPROPERTY(EditAnywhere, Category="Inventory")
-	struct FItemStack Item;
-
+	FItemStack Item;
+	
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Stack")
+	FGameplayTag ID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Stack", meta=(ClampMin="1"))
+	int32 ItemCount;
 
 	APickup();
 
@@ -35,7 +41,7 @@ public:
 	void MakePickupFromStack(FItemStack& Stack);
 
 #if WITH_EDITOR
-	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	void OnConstruction(const FTransform& Transform) override;
 #endif
 
 	void BeginPlay() override;
@@ -44,3 +50,5 @@ public:
 
 	bool Interact_Implementation(ARussianCharacter* Caller) override;
 };
+
+

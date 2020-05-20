@@ -10,3 +10,14 @@ UStaticMesh* UItemsRegistry::GetWorldMesh(const FGameplayTag& ID) const
 
 	return nullptr;
 }
+
+FItemStack UItemsRegistry::MakeStackFromID(const FGameplayTag& ID) const
+{
+	if (Items.Contains(ID))
+	{
+		FItemStack Stack{ ID, 1 };
+		return Stack;
+	}
+
+	return FItemStack::EmptyStack;
+}

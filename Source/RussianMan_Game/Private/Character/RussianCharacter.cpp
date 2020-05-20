@@ -13,6 +13,12 @@ void ARussianCharacter::Interact()
 	}
 }
 
+void ARussianCharacter::ShowInteractDebugInformation(bool bDebug)
+{
+	if (InteractionComponent)
+		InteractionComponent->bShowDebugInfo = bDebug;
+}
+
 // Sets default values
 ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer)
 {
@@ -22,6 +28,7 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("First Person Camera");
 	FirstPersonCamera->bUsePawnControlRotation = true;
+	FirstPersonCamera->SetupAttachment(GetRootComponent());
 }
 
 void ARussianCharacter::MoveForward(float Value)
