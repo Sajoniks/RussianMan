@@ -3,6 +3,7 @@
 
 #include "Components/InteractionComponent.h"
 #include "Interface/Interact.h"
+#include "Character/RussianCharacter.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
@@ -136,6 +137,17 @@ void UInteractionComponent::PerformScan()
 		GEngine->AddOnScreenDebugMessage(1, SearchRate, FColor::Green, MessageDistance);
 		GEngine->AddOnScreenDebugMessage(2, SearchRate, FColor::Green, MessageDot);
 	}
+}
+
+bool UInteractionComponent::Interact() const
+{
+	if (CurrentInteractable)
+	{
+		IInteract::Execute_Interact(CurrentInteractable.GetObject(), Cast<ARussianCharacter>(GetOwner()));
+		return true;
+	}
+	
+	return false;
 }
 
 

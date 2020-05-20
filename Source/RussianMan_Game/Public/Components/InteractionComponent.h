@@ -53,6 +53,8 @@ public:
 	
 	void PerformScan();
 
+	bool Interact() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
