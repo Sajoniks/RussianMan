@@ -16,7 +16,10 @@ struct RUSSIANMAN_GAME_API FItemStack
 	
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stack")
 	FGameplayTag ID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stack")
 	int32 Num;
 
 	//Check if stack is valid (ID is not null and Num is not zero)
@@ -37,47 +40,40 @@ struct RUSSIANMAN_GAME_API FItemStack
 
 	FItemStack(const FGameplayTag& ID, uint32 Num);
 	FItemStack();
-	
-private:
 
 	/**Map of scalar parameters
 	 * @note Such as item weight, etc.
 	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stack")
 	TMap<FGameplayTag, float> ScalarParameters;
 
 	/**Map of tagged parameters
 	 *@note Such as ammo type, etc.
 	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stack")
 	TMap<FGameplayTag, FGameplayTag> TagParameters;
+	
+private:
 
 	//Cached weight item weight
 	float ItemWeight;
+
+	//Cached max count
+	uint32 MaxNum;
 
 public:
 
 	//Get parameter of Type type
 	template <class Type>
-	const Type& GetParameter(const FGameplayTag& ParamTag) const;
+	const Type& GetParameter(const FName& ParamTag) const;
 
 	/** Set parameter of type Type
 	 * @param ParamTag		Tag of parameter
 	 * @param Value			Value of parameter ParamTag
 	 */
 	template <class Type>
-	void SetParameter(const FGameplayTag& ParamTag, const Type& Value);
+	void SetParameter(const FName& ParamTag, const Type& Value);
 
 	float Weight() const;
+	int32 Max() const;
 };
-
-template <class Type>
-const Type& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
-{
-	check("No implementation for given template type!");
-	return static_cast<Type>(0.f);
-}
-
-template <class Type>
-void FItemStack::SetParameter(const FGameplayTag& ParamTag, const Type& Value)
-{
-	check("No implementation for given template type!");
-}

@@ -6,31 +6,39 @@
 FItemStack FItemStack::EmptyStack;
 
 template <>
-const float& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
+const float& FItemStack::GetParameter(const FName& ParamTag) const
 {
-	check(ScalarParameters.Contains(ParamTag));
-	return ScalarParameters[ParamTag];
+	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+	
+	check(ScalarParameters.Contains(Tag));
+	return ScalarParameters[Tag];
 }
 
 template <>
-const FGameplayTag& FItemStack::GetParameter(const FGameplayTag& ParamTag) const
+const FGameplayTag& FItemStack::GetParameter(const FName& ParamTag) const
 {
-	check(TagParameters.Contains(ParamTag))
-	return TagParameters[ParamTag];
+	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+	
+	check(TagParameters.Contains(Tag))
+	return TagParameters[Tag];
 }
 
 template <>
-void FItemStack::SetParameter(const FGameplayTag& ParamTag, const float& Value)
+void FItemStack::SetParameter(const FName& ParamTag, const float& Value)
 {
-	if (ScalarParameters.Contains(ParamTag))
-		ScalarParameters[ParamTag] = Value;
+	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+	
+	if (ScalarParameters.Contains(Tag))
+		ScalarParameters[Tag] = Value;
 }
 
 template <>
-void FItemStack::SetParameter(const FGameplayTag& ParamTag, const FGameplayTag& Value)
+void FItemStack::SetParameter(const FName& ParamTag, const FGameplayTag& Value)
 {
-	if (TagParameters.Contains(ParamTag))
-		TagParameters[ParamTag] = Value;
+	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+	
+	if (TagParameters.Contains(Tag))
+		TagParameters[Tag] = Value;
 }
 
 bool FItemStack::IsValid() const
@@ -40,22 +48,31 @@ bool FItemStack::IsValid() const
 
 bool FItemStack::operator==(const FItemStack& ItemStack) const
 {
-	return ItemStack.ID.MatchesTagExact(ID) && Num == ItemStack.Num;
+	return (ItemStack.ID.MatchesTagExact(ID) || !ItemStack.ID.IsValid() && !ID.IsValid()) && Num == ItemStack.Num;
 }
 
 bool FItemStack::operator==(const FGameplayTag& ItemID) const
 {
-	return ItemID.MatchesTagExact(ID);
+	return ItemID.MatchesTagExact(ID) || !ItemID.IsValid() && !ID.IsValid();
 }
 
 FItemStack::FItemStack(const FGameplayTag& ID, uint32 Num)
-	:ID(ID), Num(Num), ItemWeight(-1)
-{}
+	: ID(ID), Num(Num), ItemWeight(-1), MaxNum(0)
+{
+
+}
 
 FItemStack::FItemStack()
-	:ID(FGameplayTag::EmptyTag), Num(0), ItemWeight(-1) {}
+	: ID(FGameplayTag::EmptyTag), Num(0), ItemWeight(-1), MaxNum(0)
+{
+}
 
 float FItemStack::Weight() const
 {
 	return ItemWeight * Num;
+}
+
+int32 FItemStack::Max() const
+{
+	return MaxNum;
 }
