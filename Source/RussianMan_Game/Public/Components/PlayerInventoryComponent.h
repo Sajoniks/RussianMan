@@ -16,10 +16,17 @@ class RUSSIANMAN_GAME_API UPlayerInventoryComponent : public UInventoryComponent
 
 	FGameplayTag ContainerID;
 
+	float MaxWeight;
+	uint32 MaxNum;
+
+	bool AddStack_Impl(FItemStack& Stack) override;
+
+	//Get amount of items that can be taken to inventory
+	uint32 StripStack(const FItemStack& Stack) const;
+
 public:
 
-	bool SetContainer(FItemStack& NewContainer);
+	UPlayerInventoryComponent();
 	
-	void AddStack(FItemStack& Stack) override;
-
+	bool SetContainer(FItemStack& NewContainer);
 };
