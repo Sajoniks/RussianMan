@@ -36,6 +36,7 @@ public:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
 	UPlayerInventoryComponent* GetInventory() const;
 
 protected:

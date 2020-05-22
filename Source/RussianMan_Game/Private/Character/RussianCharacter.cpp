@@ -3,6 +3,7 @@
 
 #include "Character/RussianCharacter.h"
 #include "Components/InteractionComponent.h"
+#include "Components/PlayerInventoryComponent.h"
 #include "Camera/CameraComponent.h"
 
 void ARussianCharacter::Interact()
