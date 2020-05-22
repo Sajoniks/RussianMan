@@ -30,7 +30,7 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 	void ShowInteractDebugInformation(bool bDebug);
 
 	UFUNCTION(Exec)
-	void MakeInventoryInfinite(bool bInfinity)
+	void MakeInventoryInfinite(bool bInfinity);
 
 public:
 	// Sets default values for this character's properties
