@@ -12,11 +12,20 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+	Inventory.AddDefaulted(8);
 }
 
-void UInventoryComponent::AddStack(FItemStack& Stack)
+bool UInventoryComponent::AddStack(UPARAM(ref)FItemStack& Stack)
 {
-	UE_LOG(LogInventory, Warning, TEXT("Can't add items to container, %s, ignoring"), *GetOwner()->GetName());
+	return AddStack_Impl(Stack);
+}
+
+bool UInventoryComponent::AddStack_Impl(FItemStack& Stack)
+{
+	FillFree(Stack);
+	FillPartial(Stack);
+
+	return Stack.Num <= 0;
 }
 
 bool UInventoryComponent::RemoveStack(int32 Count, const FGameplayTag& ID)
@@ -35,6 +44,7 @@ bool UInventoryComponent::RemoveStack(int32 Count, const FGameplayTag& ID)
 			if (RemoveCount == Stack->Num)
 			{
 				--Num;
+				Weight -= Stack->Weight();
 				*Stack = FItemStack::EmptyStack;
 			}
 			else
@@ -63,8 +73,9 @@ bool UInventoryComponent::RemoveStack(int32 Count, int32 Idx)
 
 			if (RemoveCount == Stack.Num)
 			{
-				Stack = FItemStack::EmptyStack;
 				--Num;
+				Weight -= Stack.Weight();
+				Stack = FItemStack::EmptyStack;
 			}
 			else
 				Stack.Num -= RemoveCount;
@@ -86,8 +97,9 @@ bool UInventoryComponent::RemoveStack(const FGameplayTag& ID)
 
 		if (Stack)
 		{
-			*Stack = FItemStack::EmptyStack;
 			--Num;
+			Weight -= Stack->Weight();
+			*Stack = FItemStack::EmptyStack;
 			return true;
 		}
 	}
@@ -105,8 +117,9 @@ bool UInventoryComponent::RemoveStack(int32 Idx)
 	{
 		if (Inventory.IsValidIndex(Idx))
 		{
-			Inventory[Idx] = FItemStack::EmptyStack;
 			--Num;
+			Weight -= Inventory[Idx].Weight();
+			Inventory[Idx] = FItemStack::EmptyStack;
 			return true;
 		}
 	}
@@ -128,6 +141,7 @@ bool UInventoryComponent::RemoveAll(const FGameplayTag& ID)
 		{
 			bRemoved = true;
 			--Num;
+			Weight -= Stack->Weight();
 			*Stack = FItemStack::EmptyStack;
 
 			Stack = Inventory.FindByPredicate([&ID](const FItemStack& Stack)
@@ -147,12 +161,104 @@ bool UInventoryComponent::RemoveAll(const FItemStack& Stack)
 	return RemoveAll(Stack.ID);
 }
 
+uint32 UInventoryComponent::NextIndex(const FItemStack& ItemStack, uint32 Index) const
+{
+	if (Inventory.IsValidIndex(Index) && ItemStack.IsValid())
+	{
+		for (auto It = Inventory.CreateConstIterator() + Index; It; ++It)
+		{
+			if (ItemStack.ID.MatchesTagExact(It->ID))
+			{
+				const int32 Delta = FMath::Abs(It->Max() - It->Num);
+
+				if (Delta > 0)
+					return It.GetIndex();
+			}
+		}
+	}
+	
+	return -1;
+}
+
+uint32 UInventoryComponent::NextFreeIndex(uint32 Index) const
+{
+	if (Inventory.IsValidIndex(Index))
+	{
+		for (auto It = Inventory.CreateConstIterator() + Index; It; ++It)
+			if (*It == FItemStack::EmptyStack)
+			{
+				return It.GetIndex();
+			}
+	}
+
+	return -1;
+}
+
+void UInventoryComponent::FillFree(FItemStack& Stack)
+{
+	if (Stack.IsValid())
+	{
+		uint32 Idx = NextFreeIndex(0);
+
+		const int32 MaxNum = Stack.Max();
+		const float ItemWeight = Stack.Weight() / Stack.Num;
+
+		while (Inventory.IsValidIndex(Idx))
+		{
+			const int32 Delta = FMath::Clamp(Stack.Num, 0, MaxNum);
+
+			Inventory[Idx] = Stack;
+			Inventory[Idx].Num = Delta;
+			Stack.Num -= Delta;
+
+			Num++;
+			Weight += Delta * ItemWeight;
+
+			if (Stack.Num <= 0)
+			{
+				Stack = FItemStack::EmptyStack;
+				return;
+			}
+
+			Idx = NextFreeIndex(Idx + 1);
+		}
+	}
+}
+
+void UInventoryComponent::FillPartial(FItemStack& Stack)
+{
+	if (Stack.IsValid())
+	{
+		uint32 Idx = NextIndex(Stack, 0);
+
+		const int32 MaxNum = Stack.Max();
+		const float ItemWeight = Stack.Weight() / Stack.Num;
+
+		while (Inventory.IsValidIndex(Idx))
+		{
+			int32 Delta = FMath::Abs(MaxNum - Inventory[Idx].Num);
+			Delta = FMath::Clamp(Delta, 0, Stack.Num);
+
+			Inventory[Idx].Num += Delta;
+			Stack.Num -= Delta;
+
+			Weight += Delta * ItemWeight;
+
+			if (Stack.Num <= 0)
+			{
+				Stack = FItemStack::EmptyStack;
+				return;
+			}
+
+			Idx = NextIndex(Stack, Idx + 1);
+		}
+	}
+}
+
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 	
 }
 

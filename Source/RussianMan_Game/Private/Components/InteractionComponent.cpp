@@ -49,7 +49,7 @@ TArray<FHitResult> UInteractionComponent::MakeSphereTrace() const
 	return TArray<FHitResult>();
 }
 
-bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
+FHitResult UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 {
 	UWorld* World = GetWorld();
 	if (World)
@@ -59,6 +59,7 @@ bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 		const FVector EndLocation = BoundingBoxData(HitResult.GetActor()).first;
 		
 		FCollisionQueryParams Params;
+		Params.bTraceComplex = true;
 		Params.AddIgnoredActor(GetOwner());
 		Params.AddIgnoredActor(HitResult.GetActor());
 
@@ -67,11 +68,14 @@ bool UInteractionComponent::MakeObstacleTrace(const FHitResult& HitResult) const
 			DrawDebugLine(World, Location, EndLocation, FColor::Orange, false, SearchRate, 0, 0.1);
 			DrawDebugPoint(World, EndLocation, 0.2, FColor::Red, false, SearchRate);
 		}
-		
-		return World->LineTraceTestByChannel(Location, EndLocation, ECC_Visibility, Params);
+
+		FHitResult Result;
+		World->LineTraceSingleByChannel(Result, Location, EndLocation, ECC_Visibility, Params);
+
+		return Result;
 	}
 
-	return false;
+	return FHitResult();
 }
 
 // Sets default values for this component's properties
@@ -87,7 +91,7 @@ void UInteractionComponent::SetTraceSource(USceneComponent* Source)
 
 void UInteractionComponent::PerformScan()
 {	
-	const FVector Center = GetOwner()->GetActorLocation();
+	const FVector Center = TraceSource ? TraceSource->GetComponentLocation() : GetOwner()->GetActorLocation() + FVector{ 0, 0, 50 };
 	const FVector ForwardVector = TraceSource ? TraceSource->GetComponentRotation().Vector() : GetOwner()->GetActorRotation().Vector();
 	
 	const auto ObjectHits = MakeSphereTrace();
@@ -99,17 +103,41 @@ void UInteractionComponent::PerformScan()
 	
 	for (const auto& Hit : ObjectHits)
 	{
-		if (!MakeObstacleTrace(Hit))
+		auto ObstacleHit = MakeObstacleTrace(Hit);
+		if (!ObstacleHit.bBlockingHit)
 		{
-			const FVector Direction = Hit.Location - Center;
-			const float Distance = FVector::Dist(Center, Hit.Location);
-			const float Dot = FVector::DotProduct(ForwardVector, Direction.GetSafeNormal());
+			auto HitActor = Hit.GetActor();
+			auto HitLocation = HitActor->GetActorLocation();
+			
+			const FVector Direction = (HitLocation - Center).GetSafeNormal();
+			const float Distance = FVector::Dist(GetOwner()->GetActorLocation(), HitLocation);
+			const float Dot = FVector::DotProduct(ForwardVector, Direction);
+
+			if (bShowDebugInfo && GEngine)
+			{
+				const auto MessageDot = FString::Printf(TEXT("Dot: %f"), Dot);
+				
+				const auto MessageVector = FString::Printf(TEXT("Forward Vector: {%f, %f, %f}"),
+					ForwardVector.X,
+					ForwardVector.Y,
+					ForwardVector.Z
+				);
+
+				uint8 GreenColor = FMath::FloorToInt(Dot > 0 ? Dot*255 : 0);
+				uint8 RedColor = FMath::FloorToInt(Dot <= 0 ? FMath::Abs(Dot)*255 : 0);
+				
+				const FColor DotColor(RedColor, GreenColor, 0);
+				
+				GEngine->AddOnScreenDebugMessage(2, SearchRate, DotColor, MessageDot);
+				GEngine->AddOnScreenDebugMessage(3, SearchRate, FColor::Yellow, MessageVector);
+				DrawDebugPoint(GetWorld(), ObstacleHit.ImpactPoint, 0.5, FColor::Red, false, SearchRate, 10);
+			}
 
 			if (Distance <= MinDistance && MaxThreshold <= Dot && Dot >= Threshold)
 			{
 				MinDistance = Distance;
 				MaxThreshold = Dot;
-				Interactable = Hit.GetActor();
+				Interactable = HitActor;
 			}
 		}
 	}
@@ -124,18 +152,11 @@ void UInteractionComponent::PerformScan()
 		const FString Name = Target ? Target->GetName() : "None";
 		const float Distance = Target ? FVector::Dist(GetOwner()->GetActorLocation(), Target->GetActorLocation()) : 0;
 
-		const FVector LookDirection = TraceSource ? TraceSource->GetComponentRotation().Vector() : GetOwner()->GetActorRotation().Vector();
-		const FVector Direction = Target ? (Target->GetActorLocation() - GetOwner()->GetActorLocation()) : FVector{};
-
-		const float Dot = FVector::DotProduct(LookDirection, Direction);
-
 		const auto MessageName = FString::Printf(TEXT("Current interaction target: %s"), *Name);
 		const auto MessageDistance = FString::Printf(TEXT("Distance: %f"), Distance);
-		const auto MessageDot = FString::Printf(TEXT("Dot: %f"), Dot);
 
-		GEngine->AddOnScreenDebugMessage(0, SearchRate, FColor::Green, MessageName);
-		GEngine->AddOnScreenDebugMessage(1, SearchRate, FColor::Green, MessageDistance);
-		GEngine->AddOnScreenDebugMessage(2, SearchRate, FColor::Green, MessageDot);
+		GEngine->AddOnScreenDebugMessage(0, SearchRate, (Target ? FColor::Yellow : FColor::Magenta), MessageName);
+		GEngine->AddOnScreenDebugMessage(1, SearchRate, FColor::Yellow, MessageDistance);
 	}
 }
 
@@ -143,8 +164,22 @@ bool UInteractionComponent::Interact() const
 {
 	if (CurrentInteractable)
 	{
-		IInteract::Execute_Interact(CurrentInteractable.GetObject(), Cast<ARussianCharacter>(GetOwner()));
-		return true;
+		UObject* Interact = CurrentInteractable.GetObject();
+		const auto ObjName = Interact->GetName();
+		
+		UE_LOG(LogInteract, Log, TEXT("Started interaction with %s"), *ObjName);
+		const bool bResult = IInteract::Execute_Interact(Interact, Cast<ARussianCharacter>(GetOwner()));
+
+		if (bResult)
+		{
+			UE_LOG(LogInteract, Log, TEXT("Interaction with %s successed"), *ObjName);
+		}
+		else
+		{
+			UE_LOG(LogInteract, Warning, TEXT("Interaction with %s failed"), *ObjName);
+		}
+
+		return bResult;
 	}
 	
 	return false;
