@@ -39,7 +39,7 @@ class RUSSIANMAN_GAME_API UInteractionComponent : public UActorComponent
 	TArray<FHitResult> MakeSphereTrace() const;
 
 	//Makes single line trace by visibility channel to check obstacles
-	bool MakeObstacleTrace(const FHitResult& HitResult) const;
+	FHitResult MakeObstacleTrace(const FHitResult& HitResult) const;
 	
 public:
 
