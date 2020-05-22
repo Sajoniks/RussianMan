@@ -28,6 +28,15 @@ FItemStack UItemsRegistry::MakeStackFromID(const FGameplayTag& ID) const
 
 		Stack.ScalarParameters = Items[ID].ScalarParameters;
 		Stack.TagParameters = Items[ID].TaggedParameters;
+
+		FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag("Param.Item.Weight");
+		if (Stack.ScalarParameters.Contains(Tag))
+			Stack.ItemWeight = Stack.ScalarParameters[Tag];
+
+		Tag = UGameplayTagsManager::Get().RequestGameplayTag("Param.Item.MaxNum");
+
+		if (Stack.ScalarParameters.Contains(Tag))
+			Stack.MaxNum = FMath::FloorToInt(Stack.ScalarParameters[Tag]);
 		
 		return Stack;
 	}
