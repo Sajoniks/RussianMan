@@ -25,9 +25,12 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 	UCameraComponent* FirstPersonCamera;
 
 	void Interact();
-
+	
 	UFUNCTION(Exec)
 	void ShowInteractDebugInformation(bool bDebug);
+
+	UFUNCTION(Exec)
+	void MakeInventoryInfinite(bool bInfinity)
 
 public:
 	// Sets default values for this character's properties

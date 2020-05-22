@@ -4,36 +4,46 @@
 #include "Components/PlayerInventoryComponent.h"
 #include "RussianMan_Game/RussianMan_Game.h"
 
+#define POCKET_SIZE (uint8)2
+#define POCKET_WEIGHT 1.f
+
 bool UPlayerInventoryComponent::AddStack_Impl(FItemStack& Stack)
 {
-	const auto Count = StripStack(Stack);
-
-	if (Count > 0)
+	if (bIgnoreParams)
 	{
-		FItemStack StackCopy = Stack;
-		StackCopy.Num = Count;
-
-		UE_LOG(LogInventory, Log, TEXT("Adding %d items to %s inventory"), Count, *GetOwner()->GetName());
-		const bool bFullAdded = Super::AddStack_Impl(StackCopy);
-
-		const int32 AddedCount = Count - StackCopy.Num;
-		Stack.Num -= AddedCount;
-
-		//In count we have items left
-		UE_LOG(LogInventory, Log, TEXT("Added %d items, %d items left in stack"), AddedCount, Stack.Num);
-
-		if (Stack.Num == 0)
-			Stack = FItemStack::EmptyStack;
-
-		return bFullAdded && Stack.Num == 0;
+		return Super::AddStack_Impl(Stack);
 	}
+	else
+	{
+		const auto Count = StripStack(Stack);
 
-	UE_LOG(LogInventory, Warning, TEXT("%s inventory is full, nothing to add.\nStats:\nWeight: %f/%f;\nFree slots: %d/%d;"),
-		*GetOwner()->GetName(),
-		Weight, MaxWeight,
-		Num, MaxNum
-	);
+		if (Count > 0)
+		{
+			FItemStack StackCopy = Stack;
+			StackCopy.Num = Count;
 
+			UE_LOG(LogInventory, Log, TEXT("Adding %d items to %s inventory"), Count, *GetOwner()->GetName());
+			const bool bFullAdded = Super::AddStack_Impl(StackCopy);
+
+			const int32 AddedCount = Count - StackCopy.Num;
+			Stack.Num -= AddedCount;
+
+			//In count we have items left
+			UE_LOG(LogInventory, Log, TEXT("Added %d items, %d items left in stack"), AddedCount, Stack.Num);
+
+			if (Stack.Num == 0)
+				Stack = FItemStack::EmptyStack;
+
+			return bFullAdded && Stack.Num == 0;
+		}
+
+		UE_LOG(LogInventory, Warning, TEXT("%s inventory is full, nothing to add.\nStats:\nWeight: %f/%f;\nFree slots: %d/%d;"),
+			*GetOwner()->GetName(),
+			Weight, MaxWeight,
+			Num, MaxNum
+		);
+	}
+	
 	return false;
 }
 
@@ -57,27 +67,39 @@ uint32 UPlayerInventoryComponent::StripStack(const FItemStack& Stack) const
 
 UPlayerInventoryComponent::UPlayerInventoryComponent()
 {
-	Inventory.AddDefaulted(8);
-	MaxNum = Inventory.Num();
-	MaxWeight = 2000;
+	Inventory.AddDefaulted(POCKET_SIZE);
+	MaxWeight = POCKET_WEIGHT;
 }
 
 bool UPlayerInventoryComponent::SetContainer(FItemStack& NewContainer)
 {
-	if (NewContainer.IsValid())
+	if (!bIgnoreParams)
 	{
-		const uint32 NewNum = NewContainer.GetParameter<float>("Param.Container.MaxNum");
-		const float NewWeight = NewContainer.GetParameter<float>("Param.Container.MaxWeight");
-
-		if (ContainerID.IsValid() && NewNum <= MaxNum && NewWeight <= MaxWeight)
+		if (NewContainer.IsValid())
 		{
-			//throw
-			MaxNum = NewNum;
-			MaxWeight = NewWeight;
-			
-			ContainerID = NewContainer.ID;
+			const uint32 NewNum = NewContainer.GetParameter<float>("Param.Container.MaxNum");
+			const float NewWeight = NewContainer.GetParameter<float>("Param.Container.MaxWeight");
+
+			if (ContainerID.IsValid() && NewNum <= Num && NewWeight <= Weight)
+			{
+				//throw this shit!
+				MaxNum = NewNum;
+				MaxWeight = NewWeight;
+
+				ContainerID = NewContainer.ID;
+			}
 		}
 	}
 	
 	return false;
+}
+
+void UPlayerInventoryComponent::MakeInfinite(bool bInfinite)
+{
+	bIgnoreParams = bInfinite;
+
+	if (bInfinite)
+		Inventory.AddDefaulted(1000);
+	else
+		Inventory.SetNum(MaxNum);
 }

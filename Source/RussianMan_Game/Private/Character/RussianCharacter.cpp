@@ -20,6 +20,11 @@ void ARussianCharacter::ShowInteractDebugInformation(bool bDebug)
 		InteractionComponent->bShowDebugInfo = bDebug;
 }
 
+void ARussianCharacter::MakeInventoryInfinite(bool bInfinity)
+{
+	
+}
+
 // Sets default values
 ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer)
 {

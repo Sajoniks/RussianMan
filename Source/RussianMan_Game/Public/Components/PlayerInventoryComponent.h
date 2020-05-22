@@ -14,6 +14,9 @@ class RUSSIANMAN_GAME_API UPlayerInventoryComponent : public UInventoryComponent
 {
 	GENERATED_BODY()
 
+	//For cheat
+	bool bIgnoreParams = false;
+	
 	FGameplayTag ContainerID;
 
 	float MaxWeight;
@@ -27,6 +30,9 @@ class RUSSIANMAN_GAME_API UPlayerInventoryComponent : public UInventoryComponent
 public:
 
 	UPlayerInventoryComponent();
-	
+
+	UFUNCTION(BlueprintCallable, Category="Inventory|Action")
 	bool SetContainer(FItemStack& NewContainer);
+
+	void MakeInfinite(bool bInfinite);
 };
