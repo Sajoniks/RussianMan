@@ -22,7 +22,12 @@ class RUSSIANMAN_GAME_API APickup : public AInteractableBase
 	UPROPERTY()
 	class UStaticMeshComponent* WorldMesh;
 
+	UPROPERTY()
+	class UWrapperBase* Wrapper;
+
 	FItemStack Item;
+
+	void Update();
 	
 public:
 

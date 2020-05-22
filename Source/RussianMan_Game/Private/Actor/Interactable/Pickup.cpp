@@ -5,11 +5,24 @@
 
 #include "RussianGameInstance.h"
 #include "Data/ItemsRegistry.h"
+#include "Data/Wrappers/WrapperBase.h"
 #include "RussianMan_Game/RussianMan_Game.h"
 
 #if WITH_EDITOR
 #include "UObject/ConstructorHelpers.h"
 #endif
+
+void APickup::Update()
+{
+	if (ItemsRegistry)
+	{
+		WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(Item.ID));
+		Wrapper = ItemsRegistry->GetWrapper(Item.ID);
+
+		if (Wrapper)
+			Wrapper->SetStack(Item);
+	}
+}
 
 APickup::APickup()
 {
@@ -21,6 +34,7 @@ APickup::APickup()
 #endif
 
 	WorldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("World Mesh"));
+	WorldMesh->SetSimulatePhysics(true);
 	SetRootComponent(WorldMesh);
 }
 
@@ -28,6 +42,8 @@ void APickup::MakePickupFromStack(FItemStack& Stack)
 {
 	Move(Item, Stack);
 	Stack = FItemStack::EmptyStack;
+
+	Update();
 }
 
 #if WITH_EDITOR
@@ -44,11 +60,11 @@ void APickup::OnConstruction(const FTransform& Transform)
 void APickup::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (!ItemsRegistry)
 	{
 		const auto Instance = Cast<URussianGameInstance>(GetGameInstance());
-		
+
 		if (Instance)
 			ItemsRegistry = Instance->GetItemsRegistry();
 	}
@@ -58,9 +74,28 @@ void APickup::BeginPlay()
 
 	Item = ItemsRegistry->MakeStackFromID(ID);
 	Item.Num = ItemCount;
+
+	Update();
 }
 
 bool APickup::Interact_Implementation(ARussianCharacter* Caller)
 {
-	return true;
+	if (Wrapper)
+	{
+		const bool bResult = Wrapper->Unwrap(Caller);
+
+		if (bResult)
+		{
+			Wrapper = nullptr;
+			Destroy();
+		}
+		else
+		{
+			//TODO 
+		}
+
+		return bResult;
+	}
+
+	return false;
 }
