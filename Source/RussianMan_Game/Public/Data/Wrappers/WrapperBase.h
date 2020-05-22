@@ -26,11 +26,11 @@ class RUSSIANMAN_GAME_API UWrapperBase : public UObject
 	void ClearStackReference();
 
 	/**Return containing stack reference
-	 * @param Wrapped stack
+	 * @param Stack Wrapped stack
 	 * @note Mustn't be called after ClearStackReference() function call!!
 	 */
 	UFUNCTION(BlueprintCallable, Category="Interaction|Pickup|Utility")
-	void GetStack(FItemStack& Stack) const;
+	FItemStack& GetStack() const;
 	
 public:
 

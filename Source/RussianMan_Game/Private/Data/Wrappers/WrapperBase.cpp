@@ -9,9 +9,9 @@ void UWrapperBase::ClearStackReference()
 	WrapStack = nullptr;
 }
 
-void UWrapperBase::GetStack(FItemStack& Stack) const
+FItemStack& UWrapperBase::GetStack() const
 {
-	Stack = *WrapStack;
+	return *WrapStack;
 }
 
 void UWrapperBase::SetStack(FItemStack& Stack)
