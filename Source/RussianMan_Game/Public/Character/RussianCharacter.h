@@ -28,6 +28,9 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
 	UCameraComponent* FirstPersonCamera;
 
+	UPROPERTY(VisibleDefaultsOnly, Category="Mesh", Instanced)
+	USkeletalMeshComponent* FirstPersonMesh;
+
 	void Interact();
 	
 	UFUNCTION(Exec)
@@ -45,6 +48,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
 	UPlayerInventoryComponent* GetInventory() const;
+
+	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
+	UWeaponComponent* GetWeapons() const;
+
+	UFUNCTION(BlueprintCallable, Category="Get")
+	USkeletalMeshComponent* GetFirstPersonMesh() const;
 	
 	bool IsPlayerControlled() const override;
 

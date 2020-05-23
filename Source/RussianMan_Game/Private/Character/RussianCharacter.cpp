@@ -6,6 +6,7 @@
 #include "Components/WeaponComponent.h"
 #include "Components/PlayerInventoryComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 void ARussianCharacter::Interact()
 {
@@ -34,6 +35,8 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 	InteractionComponent = ObjectInitializer.CreateDefaultSubobject<UInteractionComponent>(this, TEXT("Interaction Component"));
 	WeaponComponent = ObjectInitializer.CreateDefaultSubobject<UWeaponComponent>(this, TEXT("Weapon Component"));
 	InventoryComponent = ObjectInitializer.CreateDefaultSubobject<UPlayerInventoryComponent>(this, TEXT("Inventory Component"));
+
+	FirstPersonMesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("First Person Mesh"));
 	
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("First Person Camera");
 	FirstPersonCamera->bUsePawnControlRotation = true;
@@ -55,6 +58,16 @@ void ARussianCharacter::MoveRight(float Value)
 UPlayerInventoryComponent* ARussianCharacter::GetInventory() const
 {
 	return InventoryComponent;
+}
+
+UWeaponComponent* ARussianCharacter::GetWeapons() const
+{
+	return WeaponComponent;
+}
+
+USkeletalMeshComponent* ARussianCharacter::GetFirstPersonMesh() const
+{
+	return FirstPersonMesh;
 }
 
 bool ARussianCharacter::IsPlayerControlled() const
