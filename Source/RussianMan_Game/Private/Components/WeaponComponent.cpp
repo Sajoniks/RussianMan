@@ -32,3 +32,9 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
+void BindWithInventory(UInventoryComponent* InventoryComponent)
+{
+	BoundInventory = InventoryComponent;
+	//TODO 
+}
+

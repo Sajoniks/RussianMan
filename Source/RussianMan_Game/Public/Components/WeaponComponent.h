@@ -6,11 +6,15 @@
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
 
+class UInventoryComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	UInventoryComponent* BoundInventory;
 
 public:	
 	// Sets default values for this component's properties
@@ -24,5 +28,5 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	void BindWithInventory(UInventoryComponent* InventoryComponent);
 };
