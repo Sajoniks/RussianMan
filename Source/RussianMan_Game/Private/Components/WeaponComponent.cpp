@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponComponent.h"
+#include "Components/WeaponComponent.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -11,6 +11,12 @@ UWeaponComponent::UWeaponComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+}
+
+void UWeaponComponent::BindWithInventory(UInventoryComponent* InventoryComponent)
+{
+	BoundInventory = InventoryComponent;
+	//TODO 
 }
 
 
@@ -31,10 +37,3 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	// ...
 }
-
-void BindWithInventory(UInventoryComponent* InventoryComponent)
-{
-	BoundInventory = InventoryComponent;
-	//TODO 
-}
-
