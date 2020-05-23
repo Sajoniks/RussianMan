@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Data/ItemStack.h"
 #include "WeaponComponent.generated.h"
 
 class UInventoryComponent;
@@ -14,13 +15,20 @@ class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
 	GENERATED_BODY()
 
 	UPROPERTY()
+	//Component to communicate with
 	UInventoryComponent* BoundInventory;
 
 public:	
 	// Sets default values for this component's properties
 	UWeaponComponent();
 
+	/**Bind this component to inventory so it can communicate and work
+	 * @param InventoryComponent Inventory to bind
+	 */
 	void BindWithInventory(UInventoryComponent* InventoryComponent);
+
+	UFUNCTION(BlueprintCallable, Category="WeaponComponent|Action")
+	bool AddWeapon(UPARAM(ref)FItemStack& WeaponStack);
 	
 protected:
 	// Called when the game starts

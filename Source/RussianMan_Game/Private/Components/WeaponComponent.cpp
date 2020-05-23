@@ -8,7 +8,7 @@ UWeaponComponent::UWeaponComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -19,14 +19,16 @@ void UWeaponComponent::BindWithInventory(UInventoryComponent* InventoryComponent
 	//TODO 
 }
 
+bool UWeaponComponent::AddWeapon(FItemStack& WeaponStack)
+{
+	return false;
+}
+
 
 // Called when the game starts
 void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
@@ -34,6 +36,4 @@ void UWeaponComponent::BeginPlay()
 void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
