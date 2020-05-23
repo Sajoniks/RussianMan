@@ -6,30 +6,24 @@
 FItemStack FItemStack::EmptyStack;
 
 template <>
-const int32& FItemStack::GetParameter(const FName& ParamTag) const
+int32 FItemStack::GetParameterValue(const FName& ParamTag) const
 {
-	const FGameplayTag Tag= UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
-
-	check(ScalarParameters.Contains(Tag));
-	return FMath::FloorToInt(ScalarParameters[Tag]);
+	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+	return FMath::FloorToInt(ScalarParameters.FindRef(Tag));
 }
 
 template <>
 const float& FItemStack::GetParameter(const FName& ParamTag) const
 {
 	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
-	
-	check(ScalarParameters.Contains(Tag));
-	return ScalarParameters[Tag];
+	return ScalarParameters.FindChecked(Tag);
 }
 
 template <>
 const FGameplayTag& FItemStack::GetParameter(const FName& ParamTag) const
 {
 	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
-	
-	check(TagParameters.Contains(Tag))
-	return TagParameters[Tag];
+	return TagParameters.FindChecked(Tag);
 }
 
 template <>

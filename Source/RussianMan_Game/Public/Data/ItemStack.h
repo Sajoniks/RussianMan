@@ -63,9 +63,16 @@ private:
 
 public:
 
-	//Get parameter of Type type
+	//Get ref to parameter of Type type
 	template <class Type>
 	const Type& GetParameter(const FName& ParamTag) const;
+
+	/**Get value of parameter
+	 * @param ParamTag		Parameter tag
+	 * @note	 Used when it is not possible to return ref to parameter value
+	 */
+	template <class Type>
+	Type GetParameterValue(const FName& ParamTag) const;
 
 	/** Set parameter of type Type
 	 * @param ParamTag		Tag of parameter
