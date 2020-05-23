@@ -85,6 +85,9 @@ bool UPlayerInventoryComponent::SetContainer(FItemStack& NewContainer)
 				MaxWeight = NewWeight;
 
 				ContainerID = NewContainer.ID;
+
+				if (MaxNum < (uint32)Inventory.Num())
+					Inventory.SetNum(MaxNum);
 			}
 		}
 	}
