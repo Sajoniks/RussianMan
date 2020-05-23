@@ -12,6 +12,8 @@
 USTRUCT()
 struct FAnimationSet
 {
+	GENERATED_BODY()
+	
 	class UAnimMontage* WeaponMontage;
 	class UAnimMontage* FirstPersonMontage;
 	class UAnimMontage* ThirdPersonMontage;

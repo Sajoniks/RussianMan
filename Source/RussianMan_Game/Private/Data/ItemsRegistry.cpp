@@ -45,7 +45,7 @@ FItemStack UItemsRegistry::MakeStackFromID(const FGameplayTag& ID) const
 		Stack.ScalarParameters = Items[ID].ScalarParameters;
 		Stack.TagParameters = Items[ID].TaggedParameters;
 
-		Stack.MaxNum = Stack.GetParameter<int32>("Param.Item.MaxNum");
+		Stack.MaxNum = Stack.GetParameterValue<int32>("Param.Item.MaxNum");
 		Stack.ItemWeight = Stack.GetParameter<float>("Param.Item.MaxWeight");
 		
 		return Stack;
