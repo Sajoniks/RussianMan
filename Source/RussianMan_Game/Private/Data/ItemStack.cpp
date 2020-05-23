@@ -6,6 +6,15 @@
 FItemStack FItemStack::EmptyStack;
 
 template <>
+const int32& FItemStack::GetParameter(const FName& ParamTag) const
+{
+	const FGameplayTag Tag= UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
+
+	check(ScalarParameters.Contains(Tag));
+	return FMath::FloorToInt(ScalarParameters[Tag]);
+}
+
+template <>
 const float& FItemStack::GetParameter(const FName& ParamTag) const
 {
 	const FGameplayTag Tag = UGameplayTagsManager::Get().RequestGameplayTag(ParamTag);
