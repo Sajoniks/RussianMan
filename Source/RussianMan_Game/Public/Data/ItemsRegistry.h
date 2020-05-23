@@ -10,6 +10,14 @@
 #include "ItemsRegistry.generated.h"
 
 USTRUCT()
+struct FAnimationSet
+{
+	class UAnimMontage* WeaponMontage;
+	class UAnimMontage* FirstPersonMontage;
+	class UAnimMontage* ThirdPersonMontage;
+};
+
+USTRUCT()
 struct FItem
 {
 	GENERATED_BODY()
@@ -17,6 +25,12 @@ struct FItem
 	//Mesh of this item when it is spawned as pickup
 	UPROPERTY(EditDefaultsOnly, Category="Data")
 	TSoftObjectPtr<class UStaticMesh> WorldMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category="Data")
+	TSoftObjectPtr<class USkeletalMesh> ViewportMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category="Data")
+	FAnimationSet AnimationSet;
 
 	//Action that will be executed when this item is collected
 	UPROPERTY(EditDefaultsOnly, Category="Data")
@@ -45,7 +59,9 @@ class RUSSIANMAN_GAME_API UItemsRegistry : public UDataAsset
 public:
 
 	UStaticMesh*		GetWorldMesh(const FGameplayTag& ID)		const;
+	USkeletalMesh*	GetViewportMesh(const FGameplayTag& ID)	const;
 	UWrapperBase*		GetWrapper(const FGameplayTag& ID)			const;
+	FAnimationSet*	GetAnimationSet(const FGameplayTag& ID);
 	
 	FItemStack			MakeStackFromID(const FGameplayTag& ID)	const;
 };
