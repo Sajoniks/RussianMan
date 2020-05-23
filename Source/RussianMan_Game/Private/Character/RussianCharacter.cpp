@@ -38,18 +38,18 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("First Person Camera");
 	FirstPersonCamera->bUsePawnControlRotation = true;
 	FirstPersonCamera->SetupAttachment(GetRootComponent());
+
+	WeaponComponent->BindWithInventory(InventoryComponent);
 }
 
 void ARussianCharacter::MoveForward(float Value)
 {
-	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, Value);
+	AddMovementInput(GetActorForwardVector(), Value);
 }
 
 void ARussianCharacter::MoveRight(float Value)
 {
-	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, Value);
+	AddMovementInput(GetActorRightVector(), Value);
 }
 
 UPlayerInventoryComponent* ARussianCharacter::GetInventory() const
