@@ -13,36 +13,34 @@ bool UPlayerInventoryComponent::AddStack_Impl(FItemStack& Stack)
 	{
 		return Super::AddStack_Impl(Stack);
 	}
-	else
+
+	const auto Count = StripStack(Stack);
+
+	if (Count > 0)
 	{
-		const auto Count = StripStack(Stack);
+		FItemStack StackCopy = Stack;
+		StackCopy.Num = Count;
 
-		if (Count > 0)
-		{
-			FItemStack StackCopy = Stack;
-			StackCopy.Num = Count;
+		UE_LOG(LogInventory, Log, TEXT("Adding %d items to %s inventory"), Count, *GetOwner()->GetName());
+		const bool bFullAdded = Super::AddStack_Impl(StackCopy);
 
-			UE_LOG(LogInventory, Log, TEXT("Adding %d items to %s inventory"), Count, *GetOwner()->GetName());
-			const bool bFullAdded = Super::AddStack_Impl(StackCopy);
+		const int32 AddedCount = Count - StackCopy.Num;
+		Stack.Num -= AddedCount;
 
-			const int32 AddedCount = Count - StackCopy.Num;
-			Stack.Num -= AddedCount;
+		//In count we have items left
+		UE_LOG(LogInventory, Log, TEXT("Added %d items, %d items left in stack"), AddedCount, Stack.Num);
 
-			//In count we have items left
-			UE_LOG(LogInventory, Log, TEXT("Added %d items, %d items left in stack"), AddedCount, Stack.Num);
+		if (Stack.Num == 0)
+			Stack = FItemStack::EmptyStack;
 
-			if (Stack.Num == 0)
-				Stack = FItemStack::EmptyStack;
+		return bFullAdded && Stack.Num == 0;
+	}
 
-			return bFullAdded && Stack.Num == 0;
-		}
-
-		UE_LOG(LogInventory, Warning, TEXT("%s inventory is full, nothing to add.\nStats:\nWeight: %f/%f;\nFree slots: %d/%d;"),
+	UE_LOG(LogInventory, Warning, TEXT("%s inventory is full, nothing to add.\nStats:\nWeight: %f/%f;\nFree slots: %d/%d;"),
 			*GetOwner()->GetName(),
 			Weight, MaxWeight,
 			Num, MaxNum
-		);
-	}
+	);
 	
 	return false;
 }
@@ -96,10 +94,5 @@ bool UPlayerInventoryComponent::SetContainer(FItemStack& NewContainer)
 
 void UPlayerInventoryComponent::MakeInfinite(bool bInfinite)
 {
-	bIgnoreParams = bInfinite;
 
-	if (bInfinite)
-		Inventory.AddDefaulted(1000);
-	else
-		Inventory.SetNum(MaxNum);
 }
