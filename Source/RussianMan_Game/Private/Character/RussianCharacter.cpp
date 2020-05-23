@@ -3,6 +3,7 @@
 
 #include "Character/RussianCharacter.h"
 #include "Components/InteractionComponent.h"
+#include "Components/WeaponComponent.h"
 #include "Components/PlayerInventoryComponent.h"
 #include "Camera/CameraComponent.h"
 
@@ -31,7 +32,7 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	InteractionComponent = ObjectInitializer.CreateDefaultSubobject<UInteractionComponent>(this, TEXT("Interaction Component"));
-
+	WeaponComponent = ObjectInitializer.CreateDefaultSubobject<UWeaponComponent>(this, TEXT("Weapon Component"));
 	InventoryComponent = ObjectInitializer.CreateDefaultSubobject<UPlayerInventoryComponent>(this, TEXT("Inventory Component"));
 	
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("First Person Camera");
@@ -54,6 +55,11 @@ void ARussianCharacter::MoveRight(float Value)
 UPlayerInventoryComponent* ARussianCharacter::GetInventory() const
 {
 	return InventoryComponent;
+}
+
+bool ARussianCharacter::IsPlayerControlled() const
+{
+	return GetController()->IsPlayerController();
 }
 
 // Called when the game starts or when spawned

@@ -8,6 +8,7 @@
 
 class UInteractionComponent;
 class UPlayerInventoryComponent;
+class UWeaponComponent;
 class UCameraComponent;
 
 UCLASS(Blueprintable, CustomConstructor)
@@ -20,6 +21,9 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Inventory|Components", Instanced)
 	UPlayerInventoryComponent* InventoryComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category="Weapon|Components", Instanced)
+	UWeaponComponent* WeaponComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Camera", Instanced)
 	UCameraComponent* FirstPersonCamera;
@@ -41,6 +45,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
 	UPlayerInventoryComponent* GetInventory() const;
+	
+	bool IsPlayerControlled() const override;
 
 protected:
 	// Called when the game starts or when spawned
