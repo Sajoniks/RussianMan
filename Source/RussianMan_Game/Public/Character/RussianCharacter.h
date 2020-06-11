@@ -66,7 +66,7 @@ public:
 	void PlayAnimation(const FName& AnimationName) override;
 
 	//Get animation duration according current item
-	float GetAnimationDuration(const FName& AnimationName) override;
+	float GetAnimationDuration(const FName& AnimationName) const override;
 
 protected:
 	// Called when the game starts or when spawned
