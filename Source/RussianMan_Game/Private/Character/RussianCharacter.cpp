@@ -85,11 +85,11 @@ void ARussianCharacter::PlayAnimation(const FName& AnimationName)
 	}
 }
 
-float ARussianCharacter::GetAnimationDuration(const FName& AnimationName)
+float ARussianCharacter::GetAnimationDuration(const FName& AnimationName) const
 {
 	if (AnimationName.IsValid() && !AnimationName.IsNone())
 	{
-		return 1;
+		
 	}
 
 	return 0.f;
