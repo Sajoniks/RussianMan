@@ -3,13 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "AnimationManager.generated.h"
 
 /**
  * 
  */
-class RUSSIANMAN_GAME_API AnimationManager
+UCLASS()
+class RUSSIANMAN_GAME_API UAnimationManager : public UObject
 {
-public:
-	AnimationManager();
-	~AnimationManager();
+	GENERATED_BODY()
+	
 };
