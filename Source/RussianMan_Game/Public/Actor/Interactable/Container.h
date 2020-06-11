@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/Interactable/InteractableBase.h"
 #include "Container.generated.h"
 
 UCLASS()
-class RUSSIANMAN_GAME_API AContainer : public AActor
+class RUSSIANMAN_GAME_API AContainer : public AInteractableBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, Category="Inventory")
 	class UInventoryComponent* InventoryComponent;
 
-	UPROPERTY(EdtiAnywhere, Category="Visual", Instanced)
+	UPROPERTY(EditAnywhere, Category="Visual", Instanced)
 	class USkeletalMeshComponent* WorldMesh;
 	
 public:	

@@ -8,6 +8,7 @@
 #include "WeaponComponent.generated.h"
 
 class UInventoryComponent;
+class AInventoryItem;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
@@ -18,6 +19,30 @@ class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
 	//Component to communicate with
 	UInventoryComponent* BoundInventory;
 
+	UPROPERTY()
+	USkeletalMeshComponent* FP_BoundMesh;
+
+	UPROPERTY()
+	USkeletalMeshComponent* TP_BoundMesh;
+
+	UPROPERTY()
+	AInventoryItem* MainWeapon;
+
+	UPROPERTY()
+	AInventoryItem* SecondaryWeapon;
+
+	UPROPERTY()
+	AInventoryItem* MeleeWeapon;
+
+	UPROPERTY()
+	AInventoryItem* SelectedItem;
+
+	/**Little helper function that contains boilerplate code for item setting
+	 * @param ItemToSet		Item where stack will be applied
+	 * @param StackToSet	Applying stack
+	 */
+	bool HandleSet(AInventoryItem*& ItemToSet, FItemStack& StackToSet) const;
+
 public:	
 	// Sets default values for this component's properties
 	UWeaponComponent();
@@ -27,8 +52,15 @@ public:
 	 */
 	void BindWithInventory(UInventoryComponent* InventoryComponent);
 
+	/*TODO*/
 	UFUNCTION(BlueprintCallable, Category="WeaponComponent|Action")
-	bool AddWeapon(UPARAM(ref)FItemStack& WeaponStack);
+	bool SetMainWeapon(UPARAM(ref)FItemStack& WeaponStack);
+
+	UFUNCTION(BlueprintCallable, Category = "WeaponComponent|Action")
+	bool SetSecondaryWeapon(UPARAM(ref)FItemStack& WeaponStack);
+
+	UFUNCTION(BlueprintCallable, Category="WeaponComponent|Action")
+	bool SetMeleeWeapon(UPARAM(ref)FItemStack& WeaponStack);
 	
 protected:
 	// Called when the game starts

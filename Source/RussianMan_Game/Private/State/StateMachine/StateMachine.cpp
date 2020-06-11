@@ -9,6 +9,21 @@ void UStateMachine::PopState()
 		StateStack.Pop();
 }
 
+void UStateMachine::PushState(UItemStateBase* State)
+{
+	if (State)
+		StateStack.Push(State);
+}
+
+void UStateMachine::GotoState()
+{
+}
+
+bool UStateMachine::HandleInput()
+{
+	return false;
+}
+
 UItemStateBase* UStateMachine::GetCurrentState() const
 {
 	return StateStack.Top();

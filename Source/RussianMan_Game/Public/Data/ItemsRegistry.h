@@ -13,9 +13,14 @@ USTRUCT()
 struct FAnimationSet
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY()
 	class UAnimMontage* WeaponMontage;
+	
+	UPROPERTY()
 	class UAnimMontage* FirstPersonMontage;
+
+	UPROPERTY()
 	class UAnimMontage* ThirdPersonMontage;
 };
 
@@ -37,6 +42,12 @@ struct FItem
 	//Action that will be executed when this item is collected
 	UPROPERTY(EditDefaultsOnly, Category="Data")
 	TSubclassOf<class UWrapperBase> PickupWrapper;
+
+	UPROPERTY(EditDefaultsOnly, Category="Data")
+	TSubclassOf<class UItemType> ItemType;
+
+	UPROPERTY(EditDefaultsOnly, Category="Data")
+	TSubclassOf<class UStateMachine> StateMachine;
 
 	//Map of tagged scalar parameters (eg Param.Weight = 1.0)
 	UPROPERTY(EditDefaultsOnly, Category="Data")
@@ -62,7 +73,9 @@ public:
 
 	UStaticMesh*		GetWorldMesh(const FGameplayTag& ID)		const;
 	USkeletalMesh*	GetViewportMesh(const FGameplayTag& ID)	const;
+	UItemType*		GetItemType(const FGameplayTag& ID)		const;
 	UWrapperBase*		GetWrapper(const FGameplayTag& ID)			const;
+	UStateMachine*	GetStateMachine(const FGameplayTag& ID)	const;
 	FAnimationSet*	GetAnimationSet(const FGameplayTag& ID);
 	
 	FItemStack			MakeStackFromID(const FGameplayTag& ID)	const;

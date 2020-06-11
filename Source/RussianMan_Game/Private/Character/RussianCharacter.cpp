@@ -42,6 +42,8 @@ ARussianCharacter::ARussianCharacter(const FObjectInitializer& ObjectInitializer
 	FirstPersonCamera->bUsePawnControlRotation = true;
 	FirstPersonCamera->SetupAttachment(GetRootComponent());
 
+	FirstPersonMesh->SetupAttachment(FirstPersonCamera);
+	
 	WeaponComponent->BindWithInventory(InventoryComponent);
 }
 
@@ -73,6 +75,24 @@ USkeletalMeshComponent* ARussianCharacter::GetFirstPersonMesh() const
 bool ARussianCharacter::IsPlayerControlled() const
 {
 	return GetController()->IsPlayerController();
+}
+
+void ARussianCharacter::PlayAnimation(const FName& AnimationName)
+{
+	if (AnimationName.IsValid() && !AnimationName.IsNone())
+	{
+		
+	}
+}
+
+float ARussianCharacter::GetAnimationDuration(const FName& AnimationName)
+{
+	if (AnimationName.IsValid() && !AnimationName.IsNone())
+	{
+		return 1;
+	}
+
+	return 0.f;
 }
 
 // Called when the game starts or when spawned

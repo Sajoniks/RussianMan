@@ -2,7 +2,6 @@
 
 
 #include "Components/InventoryComponent.h"
-#include "RussianMan_Game/RussianMan_Game.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()

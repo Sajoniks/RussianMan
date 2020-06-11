@@ -16,5 +16,25 @@ class RUSSIANMAN_GAME_API UItemStateBase : public UObject
 
 public:
 
-	virtual bool HandleInput() const = 0;
+	virtual bool HandleInput() const { return false; }
+
+	virtual void BeginState() {}
+
+	virtual bool EndState() { return true; }
+
+	virtual void HandleEvent() {}
+
+	virtual void StateFinished() {}
+
+	virtual bool IsStateFinished() const { return true; }
+
+	virtual float GetStateDuration() const { return 0.f; }
+
+	virtual float GetStateTimeRemaining() const { return 0.f; }
+
+	virtual float GetStateTimeElapsed() const { return FMath::Abs(GetStateDuration() - GetStateTimeRemaining()); }
+
+	//class AInventoryItem* GetStateOwner() const;
+	class UStateMachine* GetStateMachine() const;
+	class UWorld* GetWorld() const override;
 };

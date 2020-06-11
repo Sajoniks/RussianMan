@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/Animatable.h"
 #include "RussianCharacter.generated.h"
 
 class UInteractionComponent;
@@ -12,7 +13,7 @@ class UWeaponComponent;
 class UCameraComponent;
 
 UCLASS(Blueprintable, CustomConstructor)
-class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
+class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter, public IAnimatable
 {
 	GENERATED_BODY()
 
@@ -32,10 +33,12 @@ class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter
 	USkeletalMeshComponent* FirstPersonMesh;
 
 	void Interact();
-	
+
+	//Draw interaction schema
 	UFUNCTION(Exec)
 	void ShowInteractDebugInformation(bool bDebug);
 
+	//Cheat 
 	UFUNCTION(Exec)
 	void MakeInventoryInfinite(bool bInfinity);
 
@@ -46,9 +49,11 @@ public:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	//Get player inventory as a component
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
 	UPlayerInventoryComponent* GetInventory() const;
 
+	//Get player weapons as a component
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
 	UWeaponComponent* GetWeapons() const;
 
@@ -56,6 +61,12 @@ public:
 	USkeletalMeshComponent* GetFirstPersonMesh() const;
 	
 	bool IsPlayerControlled() const override;
+
+	//Play animation according current item
+	void PlayAnimation(const FName& AnimationName) override;
+
+	//Get animation duration according current item
+	float GetAnimationDuration(const FName& AnimationName) override;
 
 protected:
 	// Called when the game starts or when spawned

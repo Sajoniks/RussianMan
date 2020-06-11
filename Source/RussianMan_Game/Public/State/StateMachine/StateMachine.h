@@ -8,18 +8,6 @@
 
 class UItemStateBase;
 
-enum class EItemState : uint8
-{
-	Hidden,
-	Active,
-	Equipping,
-	Unequipping,
-	Reloading,
-	Shooting,
-	Charging,
-	Aiming
-};
-
 /**
  * 
  */
@@ -33,8 +21,12 @@ class RUSSIANMAN_GAME_API UStateMachine : public UObject
 	
 public:
 
+	virtual bool HandleInput();
+	
 	UItemStateBase* GetCurrentState() const;
 
 	void PopState();
-	void PushState(EItemState State);
+	void PushState(UItemStateBase* State);
+
+	virtual void GotoState();
 };
