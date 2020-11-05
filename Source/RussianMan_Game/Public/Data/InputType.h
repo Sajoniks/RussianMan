@@ -3,15 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "InputType.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class RUSSIANMAN_GAME_API UInputType : public UObject
+enum class EInputType : uint8
 {
-	GENERATED_BODY()
-	
+	Equip,
+	Hide
 };

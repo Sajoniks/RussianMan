@@ -9,18 +9,18 @@
 
 #include "ItemsRegistry.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FAnimationSet
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
 	class UAnimMontage* WeaponMontage;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
 	class UAnimMontage* FirstPersonMontage;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Animation")
 	class UAnimMontage* ThirdPersonMontage;
 };
 

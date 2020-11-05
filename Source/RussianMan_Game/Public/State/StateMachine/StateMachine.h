@@ -8,25 +8,50 @@
 
 class UItemStateBase;
 
-/**
- * 
- */
-UCLASS()
+enum class EState : uint8
+{
+	Hide,
+	Equip,
+	Active,
+	Inactive
+};
+
+UCLASS(CustomConstructor)
 class RUSSIANMAN_GAME_API UStateMachine : public UObject
 {
+	friend class UItemStateBase;
+	
 	GENERATED_BODY()
 
 	UPROPERTY()
 	TArray<UItemStateBase*> StateStack;
+
+	void PushState(UItemStateBase* State);
 	
 public:
+	
+	UPROPERTY()
+	class UItemStateBase* StateHidden;
 
+	UPROPERTY()
+	class UItemStateBase* StateEquip;
+
+	UPROPERTY()
+	class UItemStateBase* StateActive;
+
+	UPROPERTY()
+	class UItemStateBase* StateHide;
+
+	
+	UStateMachine(const FObjectInitializer& ObjectInitializer);
+		
 	virtual bool HandleInput();
 	
 	UItemStateBase* GetCurrentState() const;
 
 	void PopState();
-	void PushState(UItemStateBase* State);
 
-	virtual void GotoState();
+	virtual void GotoState(UItemStateBase* State);
+
+	class AInventoryItem* GetMachineOwner() const;
 };

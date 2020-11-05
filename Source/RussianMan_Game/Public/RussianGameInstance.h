@@ -18,10 +18,15 @@ class RUSSIANMAN_GAME_API URussianGameInstance : public UGameInstance
 
 	UPROPERTY(EditDefaultsOnly, Category="Registry|Items")
 	UItemsRegistry* ItemsRegistry;
-	
+
+	static UItemsRegistry* ItemsRegistry_;
+
 public:
 
 	UFUNCTION(BlueprintCallable, Category="Registry|Get")
 	UItemsRegistry* GetItemsRegistry() const;
-	
+
+	static UItemsRegistry* GetItemRegistry();
+
+	void OnStart() override;
 };

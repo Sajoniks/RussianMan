@@ -7,6 +7,11 @@
 #include "RussianGameInstance.h"
 #include "Data/ItemStack.h"
 
+FItemStack& AInventoryItem::GetItemStack() const
+{
+	return *ItemStack;
+}
+
 // Sets default values
 AInventoryItem::AInventoryItem()
 {
@@ -14,6 +19,8 @@ AInventoryItem::AInventoryItem()
 	PrimaryActorTick.bCanEverTick = false;
 
 	ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Item Mesh");
+	ItemStack = new FItemStack();
+	*ItemStack = FItemStack::EmptyStack;
 }
 
 // Called when the game starts or when spawned
@@ -31,8 +38,7 @@ void AInventoryItem::SetItemStack(FItemStack& Stack)
 
 		if (!Items)
 		{
-			auto Inst = Cast<URussianGameInstance>(GetGameInstance());
-			Items = Inst ? Inst->GetItemsRegistry() : nullptr;
+			Items = URussianGameInstance::GetItemRegistry();
 		}
 		
 		if (Items)

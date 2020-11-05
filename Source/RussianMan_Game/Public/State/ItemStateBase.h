@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/InputType.h"
 #include "UObject/NoExportTypes.h"
 #include "ItemStateBase.generated.h"
 
@@ -11,12 +12,12 @@
  */
 UCLASS(Abstract)
 class RUSSIANMAN_GAME_API UItemStateBase : public UObject
-{
+{	
 	GENERATED_BODY()
 
 public:
 
-	virtual bool HandleInput() const { return false; }
+	virtual bool HandleInput(EInputType Input) const { return false; }
 
 	virtual void BeginState() {}
 
@@ -34,7 +35,16 @@ public:
 
 	virtual float GetStateTimeElapsed() const { return FMath::Abs(GetStateDuration() - GetStateTimeRemaining()); }
 
-	//class AInventoryItem* GetStateOwner() const;
-	class UStateMachine* GetStateMachine() const;
+	class AInventoryItem* GetStateOwner() const;
+
+	template <class Machine>
+	Machine* GetStateMachine() const;
+	
 	class UWorld* GetWorld() const override;
 };
+
+template <class Machine>
+Machine* UItemStateBase::GetStateMachine() const
+{
+	return GetTypedOuter<Machine>();
+}

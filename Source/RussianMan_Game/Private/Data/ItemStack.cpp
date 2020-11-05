@@ -3,7 +3,7 @@
 
 #include "Data/ItemStack.h"
 
-FItemStack FItemStack::EmptyStack;
+const FItemStack FItemStack::EmptyStack {};
 
 template <>
 int32 FItemStack::GetParameterValue(const FName& ParamTag) const

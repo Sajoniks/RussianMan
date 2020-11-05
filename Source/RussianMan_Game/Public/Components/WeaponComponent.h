@@ -13,6 +13,8 @@ class AInventoryItem;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
 {
+	using FHotbarArray = TArray<FItemStack*>;
+	
 	GENERATED_BODY()
 
 	UPROPERTY()
@@ -37,11 +39,17 @@ class RUSSIANMAN_GAME_API UWeaponComponent : public UActorComponent
 	UPROPERTY()
 	AInventoryItem* SelectedItem;
 
+	FItemStack MainWeaponStack;
+	FItemStack SecondaryWeaponStack;
+	FItemStack MeleeWeaponStack;
+
+	FHotbarArray Hotbar;
+
 	/**Little helper function that contains boilerplate code for item setting
 	 * @param ItemToSet		Item where stack will be applied
 	 * @param StackToSet	Applying stack
 	 */
-	bool HandleSet(AInventoryItem*& ItemToSet, FItemStack& StackToSet) const;
+	void HandleSet(AInventoryItem*& ItemToSet, FItemStack& StackToSet) const;
 
 public:	
 	// Sets default values for this component's properties
@@ -54,13 +62,17 @@ public:
 
 	/*TODO*/
 	UFUNCTION(BlueprintCallable, Category="WeaponComponent|Action")
-	bool SetMainWeapon(UPARAM(ref)FItemStack& WeaponStack);
+	void SetMainWeapon(UPARAM(ref)FItemStack& WeaponStack);
 
 	UFUNCTION(BlueprintCallable, Category = "WeaponComponent|Action")
-	bool SetSecondaryWeapon(UPARAM(ref)FItemStack& WeaponStack);
+	void SetSecondaryWeapon(UPARAM(ref)FItemStack& WeaponStack);
 
 	UFUNCTION(BlueprintCallable, Category="WeaponComponent|Action")
-	bool SetMeleeWeapon(UPARAM(ref)FItemStack& WeaponStack);
+	void SetMeleeWeapon(UPARAM(ref)FItemStack& WeaponStack);
+
+	AInventoryItem* GetCurrentItem() const;
+
+	const FHotbarArray& GetHotbar() const;
 	
 protected:
 	// Called when the game starts

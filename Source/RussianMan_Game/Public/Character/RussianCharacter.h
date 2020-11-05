@@ -5,17 +5,24 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/Animatable.h"
+#include "Interface/Inventory.h"
 #include "RussianCharacter.generated.h"
 
 class UInteractionComponent;
 class UPlayerInventoryComponent;
+class UInventoryComponent;
 class UWeaponComponent;
 class UCameraComponent;
 
+struct FAnimationSet;
+struct FItemStack;
+
 UCLASS(Blueprintable, CustomConstructor)
-class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter, public IAnimatable
+class RUSSIANMAN_GAME_API ARussianCharacter : public ACharacter, public IAnimatable, public IInventory
 {
 	GENERATED_BODY()
+
+	FAnimationSet* AnimationSet;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Interaction|Components", Instanced)
 	UInteractionComponent* InteractionComponent;
@@ -51,7 +58,10 @@ public:
 
 	//Get player inventory as a component
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
-	UPlayerInventoryComponent* GetInventory() const;
+	UInventoryComponent* GetInventory() const override;
+
+	//Inventory type
+	EInventoryType GetInventoryType() const override { return EInventoryType::PlayerInventory; }
 
 	//Get player weapons as a component
 	UFUNCTION(BlueprintCallable, Category="Inventory|Get")
@@ -67,6 +77,8 @@ public:
 
 	//Get animation duration according current item
 	float GetAnimationDuration(const FName& AnimationName) const override;
+
+	const FItemStack& GetCurrentHeldItem();
 
 protected:
 	// Called when the game starts or when spawned

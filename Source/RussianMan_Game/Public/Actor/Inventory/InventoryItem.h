@@ -38,6 +38,8 @@ public:
 
 	void SetItemStack(FItemStack& Stack);
 
+	FItemStack& GetItemStack() const;
+	
 	//Get current item state
 	UItemStateBase* GetCurrentState() const;
 

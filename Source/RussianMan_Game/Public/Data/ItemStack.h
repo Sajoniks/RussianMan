@@ -36,7 +36,7 @@ struct RUSSIANMAN_GAME_API FItemStack
 	bool operator==(const FGameplayTag& ItemID) const;
 
 	//Empty stack
-	static FItemStack EmptyStack;
+	static const FItemStack EmptyStack;
 
 	FItemStack(const FGameplayTag& ID, uint32 Num);
 	FItemStack();

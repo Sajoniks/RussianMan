@@ -2,19 +2,14 @@
 
 
 #include "State/ItemStateBase.h"
-#include "State/StateMachine/StateMachine.h"
+#include "Actor/Inventory/InventoryItem.h"
 
-/*AInventoryItem* UItemStateBase::GetStateOwner() const
+AInventoryItem* UItemStateBase::GetStateOwner() const
 {
 	return GetTypedOuter<AInventoryItem>();
-}*/
-
-UStateMachine* UItemStateBase::GetStateMachine() const
-{
-	return GetTypedOuter<UStateMachine>();
 }
 
 UWorld* UItemStateBase::GetWorld() const
 {
-	return nullptr;
+	return GetStateOwner()->GetWorld();
 }

@@ -6,7 +6,10 @@
 #include "Components/WeaponComponent.h"
 #include "Components/PlayerInventoryComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Actor/Inventory/InventoryItem.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Utils/AnimationManager.h"
+#include "Data/ItemStack.h"
 
 void ARussianCharacter::Interact()
 {
@@ -57,7 +60,7 @@ void ARussianCharacter::MoveRight(float Value)
 	AddMovementInput(GetActorRightVector(), Value);
 }
 
-UPlayerInventoryComponent* ARussianCharacter::GetInventory() const
+UInventoryComponent* ARussianCharacter::GetInventory() const 
 {
 	return InventoryComponent;
 }
@@ -81,18 +84,28 @@ void ARussianCharacter::PlayAnimation(const FName& AnimationName)
 {
 	if (AnimationName.IsValid() && !AnimationName.IsNone())
 	{
-		
+		AnimationSet = UAnimationManager::GetAnimationsForItem(GetCurrentHeldItem());
 	}
 }
 
 float ARussianCharacter::GetAnimationDuration(const FName& AnimationName) const
 {
-	if (AnimationName.IsValid() && !AnimationName.IsNone())
+	if (AnimationSet && AnimationName.IsValid() && !AnimationName.IsNone())
 	{
-		
+		return 1.f;
 	}
 
 	return 0.f;
+}
+
+const FItemStack& ARussianCharacter::GetCurrentHeldItem()
+{
+	if (WeaponComponent)
+	{
+		return WeaponComponent->GetCurrentItem()->GetItemStack();
+	}
+
+	return FItemStack::EmptyStack;
 }
 
 // Called when the game starts or when spawned

@@ -63,19 +63,19 @@ void APickup::BeginPlay()
 
 	if (!ItemsRegistry)
 	{
-		const auto Instance = Cast<URussianGameInstance>(GetGameInstance());
-
-		if (Instance)
-			ItemsRegistry = Instance->GetItemsRegistry();
+		ItemsRegistry = URussianGameInstance::GetItemRegistry();
 	}
 
-	if (!WorldMesh->GetStaticMesh())
-		WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(ID));
+	if (ItemsRegistry)
+	{
+		if (!WorldMesh->GetStaticMesh())
+			WorldMesh->SetStaticMesh(ItemsRegistry->GetWorldMesh(ID));
 
-	Item = ItemsRegistry->MakeStackFromID(ID);
-	Item.Num = ItemCount;
+		Item = ItemsRegistry->MakeStackFromID(ID);
+		Item.Num = ItemCount;
 
-	Update();
+		Update();
+	}
 }
 
 bool APickup::Interact_Implementation(ARussianCharacter* Caller)
